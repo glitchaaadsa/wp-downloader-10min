@@ -63,9 +63,9 @@ jobs:
 
               # 여기: 루프 안에서 dir_path를 사용
               count=$(find "$dir_path" -type f -name "*.png" | wc -l | tr -d ' ')
-              if [ "$count" -gt 24 ]; then
-                ls -1t "$dir_path"/*.png | tail -n +"$((24 + 1))" | xargs -r rm -f
-                echo "Trimmed ${dir_path} to 24 files"
+              if [ "$count" -gt 12 ]; then
+                ls -1t "$dir_path"/*.png | tail -n +"$((12 + 1))" | xargs -r rm -f
+                echo "Trimmed ${dir_path} to 12 files"
               fi
             done
 
