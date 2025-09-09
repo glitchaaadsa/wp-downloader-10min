@@ -40,45 +40,34 @@ jobs:
             "https://backend.wplace.live/files/s0/tiles/1742/791.png"
             "https://backend.wplace.live/files/s0/tiles/1743/791.png"
           )
-          DAYTIM="$(TZ=Asia/Seoul date +'%Y%m%d_%H%M%S')"
+            DAYTIM="$(TZ=Asia/Seoul date +'%Y%m%d_%H%M%S')"
 
-          for u in "${URLS[@]}"; do
-            path="${u#*/tiles/}"
-            AREA="${path%%/*}"
-            COORD="${path#*/}"
-            Y="${COORD%.*}"
-            folder="${AREA}x${Y}"
-            name="${DAYTIM}_${folder}.png"
-            output_path="images/${folder}/${name}"
+            for u in "${URLS[@]}"; do
+              path="${u#*/tiles/}"
+              AREA="${path%%/*}"
+              COORD="${path#*/}"
+              Y="${COORD%.*}"
+              folder="${AREA}x${Y}"
+              name="${DAYTIM}_${folder}.png"
+              dir_path="images/${folder}"
+              output_path="${dir_path}/${name}"
 
-            mkdir -p "${dir_path}"
+              mkdir -p "${dir_path}"
 
-            if curl -L --fail --silent --show-error -o "$output_path" "$u"; then
-            echo "Saved $output_path"
-            else
-              echo "Download failed or empty for $u" >&2
-            exit 1
-            fi
+              if curl -L --fail --silent --show-error -o "$output_path" "$u"; then
+                echo "Saved $output_path"
+              else
+                echo "Download failed or empty for $u" >&2
+                exit 1
+              fi
 
-            # 여기: 루프 안에서 dir_path를 사용
-                count=$(find "$dir_path" -type f -name "*.png" | wc -l | tr -d ' ')
-                if [ "$count" -gt 24 ]; then
+              # 여기: 루프 안에서 dir_path를 사용
+              count=$(find "$dir_path" -type f -name "*.png" | wc -l | tr -d ' ')
+              if [ "$count" -gt 24 ]; then
                 ls -1t "$dir_path"/*.png | tail -n +"$((24 + 1))" | xargs -r rm -f
                 echo "Trimmed ${dir_path} to 24 files"
               fi
             done
-
-            # Keep only the latest 24 PNGs in this folder
-            # Sort by modification time (newest first), skip first 24, delete the rest
-            # This pattern is a standard approach to trim files by count in bash
-            count=$(find "$dir_path" -type f -name "*.png" | wc -l | tr -d ' ')
-            if [ "$count" -gt 24 ]; then
-              # List oldest by taking all except newest 24
-              # Using ls -t (newest first) + tail to select overflow is a common method
-              ls -1t "$dir_path"/*.png | tail -n +"$((24 + 1))" | xargs -r rm -f
-              echo "Trimmed ${dir_path} to 24 files"
-            fi
-          done
 
       - name: Update catalog.json
         run: |
