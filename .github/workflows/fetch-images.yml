@@ -49,17 +49,17 @@ jobs:
             Y="${COORD%.*}"
             folder="${AREA}x${Y}"
             name="${DAYTIM}_${folder}.png"
-            dir_path="images/${folder}"
-            output_path="${dir_path}/${name}"
+            output_path="images/${folder}/${name}"
 
-            mkdir -p "${dir_path}"
-
+            mkdir -p "images/${folder}"
+            
             if curl -L --fail --silent --show-error -o "$output_path" "$u"; then
               echo "Saved $output_path"
             else
               echo "Download failed or empty for $u" >&2
               exit 1
             fi
+          done
 
             # Keep only the latest 24 PNGs in this folder
             # Sort by modification time (newest first), skip first 24, delete the rest
