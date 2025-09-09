@@ -51,15 +51,22 @@ jobs:
             name="${DAYTIM}_${folder}.png"
             output_path="images/${folder}/${name}"
 
-            mkdir -p "images/${folder}"
-            
+            mkdir -p "${dir_path}"
+
             if curl -L --fail --silent --show-error -o "$output_path" "$u"; then
-              echo "Saved $output_path"
+            echo "Saved $output_path"
             else
               echo "Download failed or empty for $u" >&2
-              exit 1
+            exit 1
             fi
-          done
+
+            # 여기: 루프 안에서 dir_path를 사용
+                count=$(find "$dir_path" -type f -name "*.png" | wc -l | tr -d ' ')
+                if [ "$count" -gt 24 ]; then
+                ls -1t "$dir_path"/*.png | tail -n +"$((24 + 1))" | xargs -r rm -f
+                echo "Trimmed ${dir_path} to 24 files"
+              fi
+            done
 
             # Keep only the latest 24 PNGs in this folder
             # Sort by modification time (newest first), skip first 24, delete the rest
