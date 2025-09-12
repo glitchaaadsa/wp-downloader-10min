@@ -25,6 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           URLS=(
+            "https://backend.wplace.live/files/s0/tiles/1740/788.png"
             "https://backend.wplace.live/files/s0/tiles/1740/789.png"
             "https://backend.wplace.live/files/s0/tiles/1740/790.png"
             "https://backend.wplace.live/files/s0/tiles/1740/791.png"
